@@ -2029,6 +2029,7 @@ pub enum SuiEvent {
         version: SequenceNumber,
     },
     /// Object mutated.
+    #[serde(rename_all = "camelCase")]
     MutateObject {
         package_id: ObjectID,
         transaction_module: String,
