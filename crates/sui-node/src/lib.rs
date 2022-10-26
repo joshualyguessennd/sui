@@ -115,24 +115,26 @@ impl SuiNode {
             config.enable_reconfig,
         )?));
 
-        let index_store = if is_validator {
-            None
-        } else {
-            Some(Arc::new(IndexStore::open_tables_read_write(
-                config.db_path().join("indexes"),
-                None,
-                None,
-            )))
-        };
+        let index_store = None;
+        // if is_validator {
+        //     None
+        // } else {
+        //     Some(Arc::new(IndexStore::open_tables_read_write(
+        //         config.db_path().join("indexes"),
+        //         None,
+        //         None,
+        //     )))
+        // };
 
-        let event_store = if config.enable_event_processing {
-            let path = config.db_path().join("events.db");
-            let db = SqlEventStore::new_from_file(&path).await?;
-            db.initialize().await?;
-            Some(Arc::new(EventStoreType::SqlEventStore(db)))
-        } else {
-            None
-        };
+        let event_store = None;
+        // if config.enable_event_processing {
+        // let path = config.db_path().join("events.db");
+        // let db = SqlEventStore::new_from_file(&path).await?;
+        // db.initialize().await?;
+        // Some(Arc::new(EventStoreType::SqlEventStore(db)))
+        // } else {
+        // None
+        // };
 
         let (tx_reconfigure_consensus, rx_reconfigure_consensus) = channel(100);
 
