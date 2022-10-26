@@ -2000,7 +2000,7 @@ pub enum SuiEvent {
         sender: SuiAddress,
         package_id: ObjectID,
     },
-    /// Transfer objects to new address / wrap in another object / coin
+    /// Coin balance changing event
     #[serde(rename_all = "camelCase")]
     CoinBalanceChange {
         package_id: ObjectID,
@@ -2056,6 +2056,7 @@ pub enum SuiEvent {
         recipient: Owner,
         object_type: String,
         object_id: ObjectID,
+        version: SequenceNumber,
     },
 }
 
@@ -2115,6 +2116,7 @@ impl TryFrom<SuiEvent> for Event {
                 recipient,
                 object_type,
                 object_id,
+                version,
             } => Event::NewObject {
                 package_id,
                 transaction_module: Identifier::from_str(&transaction_module)?,
@@ -2122,6 +2124,7 @@ impl TryFrom<SuiEvent> for Event {
                 recipient,
                 object_type,
                 object_id,
+                version,
             },
             SuiEvent::EpochChange(id) => Event::EpochChange(id),
             SuiEvent::Checkpoint(seq) => Event::Checkpoint(seq),
@@ -2237,6 +2240,7 @@ impl SuiEvent {
                 recipient,
                 object_type,
                 object_id,
+                version,
             } => SuiEvent::NewObject {
                 package_id,
                 transaction_module: transaction_module.to_string(),
@@ -2244,6 +2248,7 @@ impl SuiEvent {
                 recipient,
                 object_type,
                 object_id,
+                version,
             },
             Event::EpochChange(id) => SuiEvent::EpochChange(id),
             Event::Checkpoint(seq) => SuiEvent::Checkpoint(seq),
@@ -2394,6 +2399,7 @@ impl PartialEq<SuiEvent> for Event {
                 recipient: self_recipient,
                 object_type: self_object_type,
                 object_id: self_object_id,
+                version: self_version,
             } => {
                 if let SuiEvent::NewObject {
                     package_id,
@@ -2402,6 +2408,7 @@ impl PartialEq<SuiEvent> for Event {
                     recipient,
                     object_type,
                     object_id,
+                    version,
                 } = other
                 {
                     package_id == self_package_id
@@ -2410,6 +2417,7 @@ impl PartialEq<SuiEvent> for Event {
                         && self_recipient == recipient
                         && self_object_id == object_id
                         && self_object_type == object_type
+                        && self_version == version
                 } else {
                     false
                 }
